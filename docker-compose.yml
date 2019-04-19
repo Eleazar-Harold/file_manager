@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  imgweb:
+    build: .
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:3344"
+    volumes:
+      - .:/code
+    ports:
+      - "3344:3344"
+    restart: "always"
+    depends_on:
+      - imgdb
+  imgdb:
+    image: postgres
+    restart: "always"

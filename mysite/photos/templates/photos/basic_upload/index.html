@@ -1,0 +1,67 @@
+{% extends 'photos/base.html' %}
+
+{% load static %}
+
+{% block title %}Basic Upload{% endblock %}
+
+{% block javascript %}
+  {# JQUERY FILE UPLOAD SCRIPTS #}
+  <script src="{% static 'js/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.fileupload.js' %}"></script>
+
+  {# PHOTOS PAGE SCRIPTS #}
+  <script src="{% static 'photos/js/basic-upload.js' %}"></script>
+{% endblock %}
+
+{% block photos_content %}
+  <div style="margin-bottom: 20px;">
+    <button type="button" class="btn btn-primary js-upload-photos">
+      <span class="glyphicon glyphicon-cloud-upload"></span> Upload files
+    </button>
+    <input id="fileupload" type="file" name="file" multiple
+           style="display: none;"
+           data-url="{% url 'photos:basic_upload' %}"
+           data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
+  </div>
+
+  <table id="gallery" class="table table-bordered">
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for photo in photos %}
+        <tr>
+          <td><a href="{{ photo.file.url }}">{{ photo.file.name }}</a></td>
+          <td><a href="{% url 'photos:clear' photo.id %}"><span class="glyphicon glyphicon-trash"></span></a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if photos.has_other_pages %}
+  <ul class="pagination">
+    {% if photos.has_previous %}
+      <li><a href="?page={{ photos.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in photos.paginator.page_range %}
+      {% if photos.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if photos.has_next %}
+      <li><a href="?page={{ photos.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+{% endblock %}
