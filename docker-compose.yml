@@ -8,7 +8,7 @@ services:
       - DB_PASSWORD=root
       - DB_HOST=imgdb
       - DB_PORT=5432
-      - DJANGO_SETTINGS_MODULE=mysite.settings.dev
+      - DJANGO_SETTINGS_MODULE=mysite.settings.prod
     build: .
     volumes:
       - .:/code
